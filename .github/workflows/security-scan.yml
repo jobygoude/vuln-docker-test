@@ -1,0 +1,69 @@
+name: Security Vulnerability Scan
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  trivy-container-scan:
+    name: Container Vulnerability Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write  # required to upload SARIF to GitHub Security tab
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t scan-target:${{ github.sha }} .
+
+      # Step 1: Fail the job if HIGH or CRITICAL CVEs are found (blocks the merge)
+      - name: Trivy scan — block on HIGH/CRITICAL
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: scan-target:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: "1"           # non-zero exit = job fails = PR blocked
+          ignore-unfixed: false    # include vulns even if no fix exists yet
+
+      # Step 2: Generate SARIF report and upload to GitHub Security tab (always runs)
+      - name: Trivy scan — generate SARIF report
+        uses: aquasecurity/trivy-action@0.30.0
+        if: always()
+        with:
+          image-ref: scan-target:${{ github.sha }}
+          format: sarif
+          output: trivy-results.sarif
+          severity: HIGH,CRITICAL
+          exit-code: "0"           # don't double-fail; reporting only
+
+      - name: Upload SARIF to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+
+  # Scans the Dockerfile itself for misconfigurations
+  trivy-config-scan:
+    name: Dockerfile Misconfiguration Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trivy config scan — Dockerfile best practices
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"
