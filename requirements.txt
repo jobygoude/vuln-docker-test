@@ -9,5 +9,5 @@ requests==2.6.0       # pulls in vulnerable urllib3
 Werkzeug==0.11.0      # CVE-2019-14806 HIGH: pin-out of date, debugger PIN predictable
 Flask==0.10.1         # pulls in vulnerable Werkzeug
 paramiko==1.15.0      # CVE-2018-1000805 CRITICAL: authentication bypass
-sqlparse==0.2.0       # CVE-2021-32839 HIGH: ReDoS
-Twisted==19.2.1       # CVE-2019-12387 HIGH: header injection
+sqlparse==0.4.4       # CVE-2021-32839 HIGH: ReDoS
+Twisted==16.0.0       # CVE-2019-12387 HIGH: header injection
