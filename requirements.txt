@@ -2,7 +2,7 @@
 PyYAML==3.13          # CVE-2017-18342 CRITICAL: RCE via yaml.load()
 urllib3==1.21.1       # CVE-2018-20060, CVE-2019-11324 HIGH: header injection
 Jinja2==2.10          # CVE-2019-10906 HIGH: sandbox bypass
-Django==2.0.0         # CVE-2019-3498, CVE-2019-6975 HIGH
+Django==2.2.28         # CVE-2019-3498, CVE-2019-6975 HIGH
 requests==2.6.0       # pulls in vulnerable urllib3
 
 # NEW: additional HIGH/CRITICAL packages added in this branch
@@ -10,4 +10,4 @@ Werkzeug==0.11.0      # CVE-2019-14806 HIGH: pin-out of date, debugger PIN predi
 Flask==0.10.1         # pulls in vulnerable Werkzeug
 paramiko==1.15.0      # CVE-2018-1000805 CRITICAL: authentication bypass
 sqlparse==0.2.0       # CVE-2021-32839 HIGH: ReDoS
-Twisted==19.2.1       # CVE-2019-12387 HIGH: header injection
+Twisted==16.0.0       # CVE-2019-12387 HIGH: header injection
