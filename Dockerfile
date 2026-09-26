@@ -1,5 +1,4 @@
-# Intentionally uses EOL Python 3.6 on Debian Buster — known HIGH/CRITICAL CVEs for testing
-FROM python:3.6-buster
+FROM python:3.7-buster
 
 WORKDIR /app
 
